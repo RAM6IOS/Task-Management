@@ -8,14 +8,51 @@
 import SwiftUI
 
 struct Home: View {
+    @StateObject var taskViewModel:TaskViewModel = TaskViewModel()
+    @Namespace var animation
     var body: some View {
         ScrollView(.vertical ,showsIndicators: true){
             LazyVStack(spacing: 15,pinnedViews: [.sectionHeaders]){
                 Section{
                     ScrollView(.horizontal ,showsIndicators: false){
                         HStack(spacing: 10){
-                            
+                            ForEach(taskViewModel.curentWeek ,id:\.self){day in
+                               // Text(day.formatted(date: .abbreviated, time: .omitted))
+                                VStack(spacing: 10){
+                                    Text(taskViewModel.exsanshenDate(date: day, format: "dd"))
+                                        .font(.system(size: 15))
+                                        .fontWeight(.semibold)
+                                    Text(taskViewModel.exsanshenDate(date: day, format: "EEE"))
+                                        .font(.system(size: 15))
+                                    Circle()
+                                        .fill()
+                                        .frame(width: 8, height: 8)
+                                        .opacity(taskViewModel.isToday(date: day) ? 1 :0)
+                                }
+                                .foregroundColor(taskViewModel.isToday(date: day) ? .primary : .secondary)
+                                .foregroundColor(taskViewModel.isToday(date: day) ? .white : .black)
+                                .frame(width: 45 ,height: 90)
+                                .background(
+                                    ZStack{
+                                        if taskViewModel.isToday(date: day){
+                                            Capsule()
+                                                .fill(.black)
+                                                .matchedGeometryEffect(id: "jnkrewj", in: animation)
+                                        }
+                                        
+                                    })
+                                .contentShape(Capsule())
+                                .onTapGesture {
+                                    withAnimation{
+                                        taskViewModel.curentDate = day
+                                    }
+                                }
+                                
+                                
+                            }
                         }
+                        .padding(.horizontal)
+                        
                         
                     }
                 } header: {
